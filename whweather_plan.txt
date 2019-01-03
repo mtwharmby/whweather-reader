@@ -1,0 +1,64 @@
+whweather - Wharmby's Weather Station
+--
+Requirement: read temperature & humidity from serial (USB) or network device and write this to a sink.
+Later: air-pressure, anemometer, rain gauge
+
+Should be able to:
+- accept data from:
+-- serial connected device
+-- directly connected device (gpio)
+-- network connected device (socket)
+- structure received data
+- write structured data to:
+-- file
+-- database
+
+Data will arrive in a reasonable format:
+time=xyz::temp=xyz::humid=xyz
+- time quoted in ms since start time of device (for arduinos)
+
+Program flow pseudo code:
+while loop:
+for each registered listener:
+call non-blocking listen
+if message
+transform message into structured data
+call writers with data
+sleep defined time
+
+methods to:
+- transform data from above format to dictionary
+- register listeners
+- register writers
+
+attributes:
+- devices (name:start_time) *if arduino, need to know when overflow will occur
+- listeners
+- writers
+
+Listeners need:
+- read_data method (returns the data in the format above, without newlines etc.)
+- get_init_data method (init data is to associate name and dev start time)
+- set_data_send_freq (sets with what frequency the external source sends readings)
+
+Writers need:
+- write_data method (puts data into whatever sink the writer is designed to)
+
+----
+
+Listeners:
+- need a name/id and a relative time reading for each device
+
+Serial:
+- need to specify config (e.g. which serial port to listen on)
+
+Network:
+- can we have simultaneous connections to same port? How is this handled
+- need to get name/id of device sending data
+
+----
+
+Writers:
+- file
+- sqlite database
+- influxdb
