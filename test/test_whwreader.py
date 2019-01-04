@@ -1,4 +1,4 @@
-from whreader.whreader import transform_reading, Reading
+from whwreader.whwreader import transform_reading, Reading
 
 
 def test_transform():
